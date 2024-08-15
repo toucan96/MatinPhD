@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1649946209877.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1678756968",
+    "id" : "6BBE6E6A",
+    "lastKnownWriteTime" : 1650739533,
+    "last_content_update" : 1650739533422,
+    "path" : "C:/Users/s2033758/OneDrive - University of Edinburgh/00 PhD/03 Data/00 Custom packages/MatinPhD/R/ifnConc.R",
+    "project_path" : "R/ifnConc.R",
+    "properties" : {
+        "cursorPosition" : "0,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
