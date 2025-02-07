@@ -1,21 +1,3 @@
-htwil <- function(data, group_col = 2, vars, adj="BH") {
-  n<-1
-  collate <- c()
-  vars <- colnames(data[,vars])
-  repeat {
-    wilcox <- wilcox.test(data[,vars[n]]~data[,group_col])$p.value %>% as.data.frame()
-    rownames(wilcox) <- vars[n]
-    collate <- rbind(collate, wilcox)
-    n<-n+1
-    if(n==length(vars)+1) break
-  }
-  output <- collate %>% as.data.frame() %>% rownames_to_column() %>%
-    set_names(c("variable", "p.value")) %>% arrange(p.value) %>%
-    transform(p.adj=p.adjust(p.value, method="BH"), sign=case_when(p.value<0.05~"*", p.value>=0.05 ~ ""))
-  return(output)
-}
-
-
 
 htaov<- function(data, group_col = 2, vars) {
   n<-1
@@ -31,36 +13,27 @@ htaov<- function(data, group_col = 2, vars) {
   return(collate %>% relocate(variable))
 }
 
-httest<- function(data, group_col = 2, vars) {
+httable <- function(data, group_col=2, vars, threshold=5) {
   n<-1
   collate <- c()
   vars <- colnames(data[,vars])
   repeat {
-    aov.res <- tidy(t.test(data[,vars[n]] ~ data[,group_col])) %>% as.data.frame()
-    aov.res[,"variable"] <- vars[n]
-    collate <- rbind(collate, aov.res)
-    n<-n+1
-    if(n==length(vars)+1) break
-  }
-  return(collate %>% relocate(variable))
-}
-
-
-httable <- function(data, group_col=2, vars, threshold=5) {
-  n<-1
-  collate <- list()
-  ttable <- data.frame()
-  repeat {
-    ctable <- data.frame(data[,vars[n]],data[,group_col]) %>% set_names(c(vars[n],group_col)) %>% table()
+    ctable <-  data.frame(data[,vars[n]],data[,group_col]) %>% set_names(c(vars[n],group_col)) %>% table()
     collate[[vars[n]]] <- ctable
-    ttable[vars[n],"dimensions"] <- dim(ctable) %>% paste(collapse = " ")
-    ttable[vars[n],paste("all over", threshold)] <- all(ctable > threshold)
-    n<-n+1
     if(n==length(vars)+1) break
   }
-  output <- list("contigency.table"=collate,
-                 "evaluation"=ttable)
-  return(output)
+  return(collate)
+}
+httable2 <- function(data, group_col=2, vars, threshold=5) {
+  n<-1
+  collate <- c()
+  vars <- colnames(data[,vars])
+  repeat {
+    ctable <-  data.frame(data[,vars[n]],data[,group_col]) %>% set_names(c(vars[n],group_col)) %>% table()
+    collate[[vars[n]]] <- ctable
+    if(n==length(vars)+1) break
+  }
+  return(collate)
 }
 
 
