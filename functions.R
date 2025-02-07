@@ -15,30 +15,14 @@ htwil <- function(data, group_col = 2, vars, adj="BH") {
   return(output)
 }
 
-
-
-htaov<- function(data, group_col = 2, vars) {
+htparam <- function(data, group_col = 2, vars, FUN = t.test, ...) {
   n<-1
   collate <- c()
   vars <- colnames(data[,vars])
   repeat {
-    aov.res <- tidy(aov(data[,vars[n]] ~ data[,group_col])) %>% as.data.frame()
-    aov.res[,"variable"] <- vars[n]
-    collate <- rbind(collate, aov.res)
-    n<-n+1
-    if(n==length(vars)+1) break
-  }
-  return(collate %>% relocate(variable))
-}
-
-httest<- function(data, group_col = 2, vars) {
-  n<-1
-  collate <- c()
-  vars <- colnames(data[,vars])
-  repeat {
-    aov.res <- tidy(t.test(data[,vars[n]] ~ data[,group_col])) %>% as.data.frame()
-    aov.res[,"variable"] <- vars[n]
-    collate <- rbind(collate, aov.res)
+    res <- tidy(FUN(data[,vars[n]] ~ data[,group_col], ...)) %>% as.data.frame()
+    res[,"variable"] <- vars[n]
+    collate <- rbind(collate, res)
     n<-n+1
     if(n==length(vars)+1) break
   }
