@@ -1,21 +1,4 @@
-htwil <- function(data, group_col = 2, vars, adj="BH") {
-  n<-1
-  collate <- c()
-  vars <- colnames(data[,vars])
-  repeat {
-    wilcox <- wilcox.test(data[,vars[n]]~data[,group_col])$p.value %>% as.data.frame()
-    rownames(wilcox) <- vars[n]
-    collate <- rbind(collate, wilcox)
-    n<-n+1
-    if(n==length(vars)+1) break
-  }
-  output <- collate %>% as.data.frame() %>% rownames_to_column() %>%
-    set_names(c("variable", "p.value")) %>% arrange(p.value) %>%
-    transform(p.adj=p.adjust(p.value, method="BH"), sign=case_when(p.value<0.05~"*", p.value>=0.05 ~ ""))
-  return(output)
-}
-
-htparam <- function(data, group_col = 2, vars, FUN = t.test, ...) {
+ht_cont <- function(data, group_col = 2, vars, FUN = t.test, ...) {
   n<-1
   collate <- c()
   vars <- colnames(data[,vars])
@@ -26,7 +9,10 @@ htparam <- function(data, group_col = 2, vars, FUN = t.test, ...) {
     n<-n+1
     if(n==length(vars)+1) break
   }
-  return(collate %>% relocate(variable))
+  return(collate %>% relocate(variable) %>%
+           transform(p.adj=p.adjust(p.value, method="BH")) %>%
+           transform(sign=case_when(p.adj < 0.05 ~ "**", p.value<0.05~"*", p.value>=0.05 ~ ""))
+  )
 }
 
 
