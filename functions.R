@@ -1,39 +1,19 @@
-
-htaov<- function(data, group_col = 2, vars) {
+ht_table <- function(data, group_col=2, vars, threshold=5) {
   n<-1
-  collate <- c()
+  collate <- list()
   vars <- colnames(data[,vars])
+  ttable <- data.frame()
   repeat {
-    aov.res <- tidy(aov(data[,vars[n]] ~ data[,group_col])) %>% as.data.frame()
-    aov.res[,"variable"] <- vars[n]
-    collate <- rbind(collate, aov.res)
+    ctable <- data.frame(data[,vars[n]],data[,group_col]) %>% set_names(c(vars[n],group_col)) %>% table()
+    collate[[vars[n]]] <- ctable
+    ttable[vars[n],"dimensions"] <- dim(ctable) %>% paste(collapse = " ")
+    ttable[vars[n],paste("all over", threshold)] <- all(ctable > threshold)
     n<-n+1
     if(n==length(vars)+1) break
   }
-  return(collate %>% relocate(variable))
-}
-
-httable <- function(data, group_col=2, vars, threshold=5) {
-  n<-1
-  collate <- c()
-  vars <- colnames(data[,vars])
-  repeat {
-    ctable <-  data.frame(data[,vars[n]],data[,group_col]) %>% set_names(c(vars[n],group_col)) %>% table()
-    collate[[vars[n]]] <- ctable
-    if(n==length(vars)+1) break
-  }
-  return(collate)
-}
-httable2 <- function(data, group_col=2, vars, threshold=5) {
-  n<-1
-  collate <- c()
-  vars <- colnames(data[,vars])
-  repeat {
-    ctable <-  data.frame(data[,vars[n]],data[,group_col]) %>% set_names(c(vars[n],group_col)) %>% table()
-    collate[[vars[n]]] <- ctable
-    if(n==length(vars)+1) break
-  }
-  return(collate)
+  output <- list("contigency.table"=collate,
+                 "evaluation"=ttable)
+  return(output)
 }
 
 
