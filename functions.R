@@ -1,4 +1,4 @@
-ht_table <- function(data, group_col=2, vars, threshold=5) {
+ht_table <- function(data, group_col=2, vars, min.obs=5) {
   n<-1
   collate <- list()
   vars <- colnames(data[,vars])
@@ -7,7 +7,7 @@ ht_table <- function(data, group_col=2, vars, threshold=5) {
     ctable <- data.frame(data[,vars[n]],data[,group_col]) %>% set_names(c(vars[n],group_col)) %>% table()
     collate[[vars[n]]] <- ctable
     ttable[vars[n],"dimensions"] <- dim(ctable) %>% paste(collapse = " ")
-    ttable[vars[n],paste("all over", threshold)] <- all(ctable > threshold)
+    ttable[vars[n],paste("all over", min.obs)] <- all(ctable > min.obs)
     n<-n+1
     if(n==length(vars)+1) break
   }
@@ -16,44 +16,21 @@ ht_table <- function(data, group_col=2, vars, threshold=5) {
   return(output)
 }
 
-
-htchi <- function(data, vars = NULL) {
-  list.tables <- data[[1]]
-  if (is.null(vars)) {
-    vars <- data$evaluation %>% filter(`all over 5` ==TRUE) %>% rownames()
-  } else vars <- vars
+ht_disc <- function(data, vars = 1, FUN=chisq.test, ...) {
   n<-1
-  collate <- data.frame()
+  collate <- c()
+  vars <- names(data)[vars]
   repeat {
-    chi <-chisq.test(list.tables[[n]])
-    collate[vars[n],"statistic"]<- chi$statistic
-    collate[vars[n],"p.value"] <- chi$p.value
+    res <- broom::tidy(FUN(data[[vars[n]]], ...)) %>% as.data.frame()
+    res[,"variable"] <- vars[n]
+    collate <- rbind(collate, res)
     n<-n+1
     if(n==length(vars)+1) break
   }
-  output <- collate %>% rownames_to_column(var="variable") %>% transform(sign=case_when(p.value<0.05~"*", p.value>=0.05 ~ ""))
-  return(output)
+  return(collate %>% relocate(variable) %>%
+           transform(p.adj=p.adjust(p.value, method="BH")) %>%
+           transform(sign=case_when(p.adj < 0.05 ~ "**", p.value<0.05~"*", p.value>=0.05 ~ "")))
 }
-
-htfish <- function(data, vars = NULL) {
-  list.tables <- data[[1]]
-  if (is.null(vars)) {
-    vars <- data$evaluation %>% filter(`all over 5` ==FALSE) %>% rownames()
-  } else vars <- vars
-  n<-1
-  collate <- data.frame()
-  repeat {
-    fisher <-fisher.test(list.tables[[n]], workspace = 2e8)
-    collate[vars[n],"p.value"] <- fisher$p.value
-    n<-n+1
-    if(n==length(vars)+1) break
-  }
-  output <- collate %>% rownames_to_column(var="variable") %>% transform(sign=case_when(p.value<0.05~"*", p.value>=0.05 ~ ""))
-  return(output)
-}
-
-
-
 
 
 ### NOT FINALISED ###
