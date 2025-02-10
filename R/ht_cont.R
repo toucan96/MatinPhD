@@ -3,7 +3,7 @@ ht_cont <- function(data, group_col = 2, vars, FUN = t.test, ...) {
   collate <- c()
   vars <- colnames(data[,vars])
   repeat {
-    res <- tidy(FUN(data[,vars[n]] ~ data[,group_col], ...)) %>% as.data.frame()
+    res <- broom::tidy(FUN(data[,vars[n]] ~ data[,group_col], ...)) %>% as.data.frame()
     res[,"variable"] <- vars[n]
     collate <- rbind(collate, res)
     n<-n+1
