@@ -1,7 +1,7 @@
 ht_disc <- function(data, vars = 1, FUN=chisq.test, ...) {
   n<-1
   collate <- c()
-  vars <- names(data)[vars]
+  vars <- data[vars] %>% names()
   repeat {
     res <- broom::tidy(FUN(data[[vars[n]]], ...)) %>% as.data.frame()
     res[,"variable"] <- vars[n]
