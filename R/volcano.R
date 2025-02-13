@@ -17,5 +17,3 @@ volcano <- function(data, x, y, alpha=0.05, min=1) {
     theme_classic()+
     theme(legend.position = "none") 
 }
-
-volcano(met_res, "logFC", "p.value")
