@@ -1,12 +1,12 @@
 volcano <- function(data, x, y, alpha=0.05, min=1) {
   ggplot(data,
          aes(
-           x= data[[x]],
-           y= -log10(data[[y]]),
+           x= .data[[x]],
+           y= -log10(.data[[y]]),
            colour = 
-             ifelse(data[[y]] < alpha & data[[x]] > min |
-                      data[[y]] < alpha & data[[x]] < - min, "#E7B100", 
-                    ifelse(data[[y]] < alpha, "#006F94", "lightgrey")
+             ifelse(.data[[y]] < alpha & .data[[x]] > min |
+                      .data[[y]] < alpha & .data[[x]] < - min, "#E7B100", 
+                    ifelse(.data[[y]] < alpha, "#006F94", "lightgrey")
              )
          )) +
     geom_point() +
@@ -18,3 +18,4 @@ volcano <- function(data, x, y, alpha=0.05, min=1) {
     theme(legend.position = "none") 
 }
 
+volcano(met_res, "logFC", "p.value")
