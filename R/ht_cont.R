@@ -1,4 +1,4 @@
-ht_cont <- function(data, group_col = 2, vars, FUN = t.test, ...) {
+ht_cont <- function(data, group_col = 2, vars, FUN = t.test, adj="BH", ...) {
   n<-1
   collate <- c()
   vars <- colnames(data[,vars])
@@ -10,7 +10,7 @@ ht_cont <- function(data, group_col = 2, vars, FUN = t.test, ...) {
     if(n==length(vars)+1) break
   }
   return(collate %>% relocate(variable) %>%
-           transform(p.adj=p.adjust(p.value, method="BH")) %>%
+           transform(p.adj=p.adjust(p.value, method=adj)) %>%
            transform(sign=case_when(p.adj < 0.05 ~ "**", p.value<0.05~"*", p.value>=0.05 ~ ""))
   )
 }
