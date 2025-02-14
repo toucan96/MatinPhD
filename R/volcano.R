@@ -11,7 +11,7 @@ volcano <- function(data, x, y, alpha=0.05, min=1) {
          )) +
     geom_point() +
     scale_colour_identity()+
-    scale_x_continuous(limits = c(-max(sqrt(data[[x]]^2)), max(sqrt(data[[x]]^2)))) +
+    scale_x_continuous(limits = c(-max(sqrt(data[[x]]^2), na.rm=TRUE), max(sqrt(data[[x]]^2), na.rm=TRUE))) +
     geom_hline(yintercept = -log10(alpha), linetype =2) +
     geom_vline(xintercept = c(-min,min), linetype =2) +
     theme_classic()+
