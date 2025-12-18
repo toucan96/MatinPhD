@@ -1,12 +1,9 @@
 body {
-	font-family: Verdana;
+	font-family: "Century Gothic";
 	padding: 0px 20px;
 }
 div.topbar {
 	padding: 10px 0 10px 10px;
-	border-bottom: 1px;
-	border-bottom: #5d5E5F;
-	border-bottom-style: solid;
 }
 div.topbar h1 {
 	margin:0;
@@ -28,6 +25,7 @@ div.sidebar ul.navbar {
 	margin: 0;
 	padding: 0;
 	background-color: #E1E2E3;
+		border-radius: 10px;
 }
 ul.navbar li a {
 	display: block;
@@ -37,7 +35,8 @@ ul.navbar li a {
 }
 ul.navbar li a:hover {
 	color: #ffffff;
-	background-color: #5d5E5F;
+	background-color: #95a5a6;
+	border-radius: 10px;
 }
 div.content {
 	flex: 9;
@@ -47,5 +46,10 @@ div.content {
 	color:#000000;
 	padding: 20px 0 0 0;
 	height: 100vh;
+	border-top: 1px;
+	border-top: #95a5a6;
+	border-top-style: solid;
 }
+
+	
 	
